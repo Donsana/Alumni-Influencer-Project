@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Alumni Influencer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<div class="login-container">
+  <div class="login-card">
+    <h2>🔐 Login</h2>
+
+    <input type="email" id="email" placeholder="University Email">
+    <div class="password-field">
+  <input type="password" id="password" placeholder="Password">
+  <span class="toggle-eye" onclick="togglePassword('password', this)">👁️</span>
+</div>
+    <button onclick="login()">Login</button>
+    <p id="error" class="error"></p>
+    <p id="error" class="error"></p>
+    <a href="reset.html" class="forgot-link">Forgot Password?</a>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>loadNavbar();</script>
+</body>
+</html>

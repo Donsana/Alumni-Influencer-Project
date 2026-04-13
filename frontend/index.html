@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alumni Influencer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+<div class="dashboard-container">
+
+  <div class="stats" id="statsSection">
+  <div class="stat-card">💰 Bids: <span id="bids">...</span></div>
+  <div class="stat-card">🏆 Wins: <span id="wins">...</span></div>
+  <div class="stat-card">📅 Today: Active</div>
+  <div class="stat-card" id="limit">Monthly wins: ...</div>
+  <div class="stat-card" id="slot">Tomorrow's slot: ...</div>
+  <div class="stat-card">
+  ⭐ Appearances: <span id="appearanceCount">...</span>
+</div>
+</div>
+  <div class="card">
+    <h2>🌟 Featured Alumni</h2>
+
+    <div id="featured">
+      Loading...
+    </div>
+  </div>
+  <div class="card">
+  <h2>🏆 Your Result</h2>
+  <p id="bidAmount"></p>
+  <p id="liveStatus"></p>
+  </div>
+    <div class="card api-launch">
+      <h2>🔑 API Key Management</h2>
+      <p>Manage your API keys, usage, and access documentation.</p>
+
+      <button onclick="openApiPanel()">Open API Manager</button>
+    </div>
+  
+   <div id="apiModal" class="api-modal" style="display:none;">
+  <div class="api-modal-content">
+
+    <span class="close-btn" onclick="closeApiPanel()">✖</span>
+
+    <h2>🔑 API Key Management</h2>
+    <p id="apiMsg"></p>
+    <button onclick="generateKey()">Generate API Key</button>
+
+    <div id="apiResult" style="display:none;">
+      <p>Current Key</p>
+      <p id="apiKeyText"></p>
+      <button id="revokeBtn">Revoke Key</button>
+    </div>
+
+    <div>
+  <p>All Keys</p>
+
+  <div class="keys-container">
+    <ul id="keyList"></ul>
+  </div>
+
+</div>
+
+    <div>
+      <p><strong>Usage:</strong> <span id="usageText">Loading...</span></p>
+    </div>
+
+    <a href="http://localhost:5000/api-docs" target="_blank" class="api-doc-link">
+    📄 View API Docs
+    </a>
+  </div>
+</div>
+</div>
+
+
+
+<script src="app.js"></script>
+<script>
+loadNavbar();
+handleGuestView(); 
+
+const token = localStorage.getItem("token");
+
+loadFeatured(); // ALWAYS PUBLIC
+
+if (token) {
+  loadBidStatus();
+  loadStats();
+  loadMonthlyLimit();
+  loadSlot();
+  loadAppearance();
+  loadUsage();
+  loadLiveStatus();
+}
+</script>
+</body>
+</html>

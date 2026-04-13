@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reset Password</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- RESET CARD -->
+<div class="card" style="width:400px; margin:90px auto;">
+
+  <h2>🔑 Reset Password</h2>
+  <p id="success"></p>
+<p id="error"></p>
+  <!-- STEP 1: REQUEST RESET -->
+  <div id="requestSection">
+    <input type="email" id="email" placeholder="Enter your email">
+    <button onclick="requestReset()">Send Reset Token</button>
+  </div>
+
+  <!-- STEP 2: RESET PASSWORD -->
+  <div id="resetSection" style="display:none;">
+    <input type="text" id="token" placeholder="Enter reset token">
+    <div class="password-field">
+  <input type="password" id="password" placeholder="Password">
+  <span class="toggle-eye" onclick="togglePassword('password', this)">👁️</span>
+</div>
+    <button onclick="resetPassword()">Reset Password</button>
+  </div>
+
+</div>
+
+<!-- JS -->
+<script src="app.js"></script>
+<script>loadNavbar();</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile - Alumni Influencer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="profile">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- PROFILE CONTENT -->
+<div class="container">
+
+      <!-- LEFT -->
+      <div class="side-card">
+  <div class="title">Certifications & Licences</div>
+
+  <div class="box">
+    <h4>Certifications</h4>
+    <ul id="certList"></ul>
+
+    <h4 style="margin-top:15px;">Licences</h4>
+    <ul id="licenceList"></ul>
+  </div>
+</div>
+
+      <!-- CENTER -->
+      <div class="profile-wrapper">
+
+        <div class="profile-card">
+
+          <div class="profile-img">
+            <img src="https://i.pravatar.cc/150" />
+          </div>
+
+          <div class="profile-header" id="name">Your Name</div>
+
+          <div class="profile-body">
+            <h3 id="job">Current Job Title</h3>
+
+            <p class="about-title">About:</p>
+            <p id="bio">No bio added yet.</p>
+
+            <p><b>LinkedIn:</b> <span id="linkedin">No link added</span></p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="side-card">
+  <div class="title">Qualifications</div>
+
+  <div class="box">
+    <h4>Degrees</h4>
+    <ul id="degreeList"></ul>
+
+    <h4 style="margin-top:15px;">Courses</h4>
+    <ul id="courseList"></ul>
+  </div>
+</div>
+
+    </div>
+
+
+<script src="app.js"></script>
+
+<script>
+  // Load profile when page opens
+  loadProfile();
+  loadNavbar();
+</script>
+
+</body>
+</html>

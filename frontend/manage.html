@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Profile - Alumni Influencer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="manage">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- MAIN -->
+<div class="manage-container">
+
+  <!-- PROFILE -->
+  <div class="card profile-section">
+
+    <div class="left">
+      <h2>Manage Profile</h2>
+
+      <label>Full Name *</label>
+      <input id="editName" placeholder="Full Name">
+
+      <label>Current Job Title *</label>
+      <input id="editJob" placeholder="Current Job Title">
+
+      <label>LinkedIn URL</label>
+      <input id="editLinkedin" placeholder="LinkedIn URL">
+
+      <label>About / Bio</label>
+      <textarea id="editBio" placeholder="About / Bio"></textarea>
+
+      <div id="profileMessage"></div>
+      <button onclick="saveProfile()">Save Profile</button>
+
+      <h3>Profile Completion</h3>
+      <div class="progress-container">
+      <div id="progressBar"></div>
+</div>
+
+<p id="completionText">0%</p>
+    </div>
+
+    <div class="right">
+      <div class="upload-box" id="uploadBox">
+  Drag & Drop Image Here or Click
+  <input type="file" id="fileInput" accept="image/*" hidden>
+</div>
+      <div class="avatar"></div>
+    </div>
+
+  </div>
+
+
+  <!-- CERT + LICENCE -->
+  <div class="grid-2">
+
+    <div class="card">
+      <h2>Certifications</h2>
+      <ul id="certList"></ul>
+
+      <label>Certification Name *</label>
+      <input id="certName" placeholder="Enter certification name">
+
+      <label>Organisation</label>
+      <input id="certOrg" placeholder="Enter organisation">
+
+      <label>Course URL</label>
+      <input id="certUrl" placeholder="https://...">
+
+      <label>Completion Date</label>
+      <input type="date" id="certDate">
+      <p id="certMsg"></p>
+      <button onclick="addCertification()">Add Certification</button>
+    </div>
+
+    <div class="card">
+      <h2>Professional Licences</h2>
+      <ul id="licenceList"></ul>
+
+      <label>Licence Name *</label>
+      <input id="licenceName">
+
+      <label>Awarding Body</label>
+      <input id="licenceBody">
+
+      <label>Official URL</label>
+      <input id="licenceUrl">
+
+      <label>Completion Date</label>
+      <input type="date" id="licenceDate">
+      <p id="licenceMsg"></p>
+      <button onclick="addLicence()">Add Licence</button>
+    </div>
+
+  </div>
+
+
+  <!-- DEGREE + COURSE -->
+  <div class="grid-2">
+
+    <div class="card">
+      <h2>Degrees</h2>
+      <ul id="degreeList"></ul>
+
+      <label>Degree Name *</label>
+      <input id="degreeName">
+
+      <label>Institution</label>
+      <input id="degreeInstitute">
+
+      <label>Official URL</label>
+      <input id="degreeUrl">
+
+      <label>Completion Date</label>
+      <input type="date" id="degreeDate">
+      <p id="degreeMsg"></p>
+      <button onclick="addDegree()">Add Degree</button>
+    </div>
+
+    <div class="card">
+      <h2>Short Courses</h2>
+      <ul id="courseList"></ul>
+
+      <label>Course Name *</label>
+      <input id="courseName">
+
+      <label>Provider</label>
+      <input id="courseProvider">
+
+      <label>Course URL</label>
+      <input id="courseUrl">
+
+      <label>Completion Date</label>
+      <input type="date" id="courseDate">
+      <p id="courseMsg"></p>
+      <button onclick="addCourse()">Add Course</button>
+    </div>
+
+  </div>
+
+
+  <!-- EMPLOYMENT -->
+  <div class="card">
+    <h2>Employment History</h2>
+    <ul id="employmentList"></ul>
+
+    <label>Company Name *</label>
+    <input id="employmentName">
+
+    <label>Job Title *</label>
+    <input id="employmentTitle">
+
+    <div class="grid-2">
+      <div>
+        <label>Start Date</label>
+        <input type="date" id="startDate">
+      </div>
+
+      <div>
+        <label>End Date</label>
+        <input type="date" id="endDate">
+      </div>
+    </div>
+
+    <label>Description</label>
+    <textarea id="employmentDesc"></textarea>
+    <p id="employmentMsg"></p>
+    <button onclick="addEmployment()">Add Employment</button>
+  </div>
+
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Edit</h3>
+
+    <div id="modalFields"></div>
+    <p id="modalMsg"></p>
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Cancel</button>
+      <button onclick="saveModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+  loadProfile();
+  loadCompletion();
+  loadNavbar();
+</script>
+
+</body>
+</html>

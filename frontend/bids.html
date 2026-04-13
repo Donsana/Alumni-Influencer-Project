@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bidding - Alumni Influencer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- BIDS CONTENT -->
+<div id="bidsContainer"></div>
+
+<script src="app.js"></script>
+
+<script>
+  function loadBidsPage() {
+  const content = document.getElementById("bidsContainer");
+
+  content.innerHTML = `
+    <div class="bids-wrapper">
+
+      <!-- LEFT: BLIND BIDDING -->
+      <div class="bid-card">
+        <h2>Blind bidding</h2>
+
+        <p>Status: <span id="bidStatus"></span></p>
+        <p id="limit"></p>
+        <p id="slot"></p> 
+
+        <label>Bid amount</label>
+        <input type="number" id="amount" placeholder="Enter amount">
+        <p id="bidMsg"></p>
+
+        <button class="place-btn" onclick="placeBid()">Place bid</button>
+        <button onclick="cancelBid()" class="danger">Cancel bid</button>
+
+        <p id="myBid" style="margin-top:15px;"></p>
+      </div>
+
+      <!-- RIGHT: HISTORY -->
+      <div class="history-card">
+        <h2>Your bid history</h2>
+        <ul id="bidHistory"></ul>
+      </div>
+
+    </div>
+  `;
+
+  loadMyBid();
+  loadBidHistory();
+  loadBidStatus();
+  loadMonthlyLimit();
+  loadSlot();
+  loadNavbar();
+}
+
+  loadBidsPage();
+</script>
+
+</body>
+</html>
