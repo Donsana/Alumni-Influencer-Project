@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- PAGE TITLE -->
+<div class="dashboard-hero">
+  <h1>🎓 University Analytics Dashboard</h1>
+  <p>Overview of alumni data for the university dashboard.</p>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="summary-cards">
+
+  <div class="card">
+    <h3>Total Alumni</h3>
+    <p id="totalAlumni">-</p>
+  </div>
+
+  <div class="card">
+    <h3>Total Certifications</h3>
+    <p id="totalCerts">-</p>
+  </div>
+
+  <div class="card">
+    <h3>Employment Records</h3>
+    <p id="totalJobs">-</p>
+  </div>
+
+</div>
+<!-- TOP INSIGHTS -->
+<div class="card-container" style="padding: 20px; display: flex; gap: 20px; flex-wrap: wrap;">
+
+  <div class="card wide-card">
+    <h3>Top Industries</h3>
+    <ul id="dashboardTopIndustries">
+      <li>Loading...</li>
+    </ul>
+  </div>
+
+  <div class="card wide-card">
+    <h3>Top Employers</h3>
+    <ul id="dashboardTopEmployers">
+      <li>Loading...</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="card dashboard-actions">
+  
+  <button class="btn-primary" onclick="window.location.href='charts.html'">
+    📊 View Charts
+  </button>
+
+  <button class="btn-primary" onclick="window.location.href='alumni.html'">
+    👥 View Alumni
+  </button>
+
+  <button class="btn-secondary" onclick="exportDashboardCSV()">
+  ⬇ Export CSV
+</button>
+  <button class="btn-secondary" onclick="exportDashboardPDF()">
+    ⬇ Export PDF
+  </button>
+
+</div>
+<!-- CUSTOM REPORTS -->
+<div class="card custom-report-card">
+
+  <h2>Custom Reports</h2>
+  <p>Choose the metrics you want, then export the report as CSV.</p>
+
+  <div class="report-grid">
+
+    <label>
+      <input type="checkbox" class="report-option" value="totalAlumni" checked>
+      Total Alumni
+    </label>
+
+    <label>
+      <input type="checkbox" class="report-option" value="totalCerts" checked>
+      Total Certifications
+    </label>
+
+    <label>
+      <input type="checkbox" class="report-option" value="totalJobs" checked>
+      Employment Records
+    </label>
+
+    <label>
+      <input type="checkbox" class="report-option" value="topIndustries" checked>
+      Top Industries
+    </label>
+
+    <label>
+      <input type="checkbox" class="report-option" value="topEmployers" checked>
+      Top Employers
+    </label>
+
+  </div>
+
+  <button class="btn-primary" onclick="exportCustomReportCSV()">
+    ⬇ Export Report CSV
+  </button>
+  <button class="btn-primary" onclick="exportCustomReportPDF()">
+  ⬇ Export Report PDF
+</button>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+loadNavbar();
+
+// load summary stats safely
+if (typeof loadSummaryStats === "function") {
+  loadSummaryStats();
+}
+if (typeof loadDashboardTopStats === "function") {
+  loadDashboardTopStats();
+}
+if (typeof restoreCustomReportOptions === "function") {
+  restoreCustomReportOptions();
+}
+</script>
+
+</body>
+</html>

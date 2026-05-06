@@ -59,6 +59,18 @@ This platform allows alumni to register using their university email, create pro
 
 ---
 
+## 🏗️ Architecture
+
+Frontend (HTML/CSS/JavaScript)  
+↓  
+REST API (Express.js Backend)  
+↓  
+MongoDB Database
+
+The system follows a three-tier architecture consisting of frontend, backend API layer, and MongoDB database layer. The frontend communicates with the backend using RESTful APIs secured with JWT authentication and API keys.
+
+---
+
 ## ⚙️ Setup Instructions
 
 ### 1. Install dependencies

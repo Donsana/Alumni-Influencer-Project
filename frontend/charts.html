@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Charts</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<!-- PAGE TITLE -->
+<div class="charts-panel">
+
+  <h1>📊 Analytics Dashboard</h1>
+
+  <div class="charts-filter-row">
+    <select id="programmeFilter">
+      <option value="">All Programmes</option>
+      <option value="CS">Computer Science</option>
+      <option value="Business">Business</option>
+    </select>
+
+    <select id="yearFilter">
+      <option value="">All Years</option>
+       <option value="2023">2023</option>
+  <option value="2024">2024</option>
+  <option value="2025">2025</option>
+  <option value="2026">2026</option>
+    </select>
+
+    <select id="industryFilter">
+      <option value="">All Industries</option>
+      <option value="IT">IT</option>
+      <option value="Finance">Finance</option>
+    </select>
+
+    <button onclick="applyFilters()">Apply Filters</button>
+    <button onclick="resetFilters()">Reset</button>
+    <button onclick="window.location.href='dashboard.html'">Back Dashboard</button>
+    
+<!-- Analytics action buttons for exporting reports and chart downloads -->
+    <button onclick="exportChartsCSV()">Export CSV</button>
+    <button onclick="exportChartsPDF()">Export PDF</button>
+    <button onclick="downloadAllChartsPDF()">Download Chart Images</button>
+  </div>
+<!-- Save and load reusable filter presets for analytics dashboard -->
+  <div class="charts-filter-row">
+    <input id="chartPresetName" placeholder="Preset name">
+
+    <button onclick="saveChartPreset()">Save Filter Preset</button>
+
+    <select id="chartPresetList" onchange="loadChartPreset()">
+      <option value="" disabled selected>Load saved preset</option>
+    </select>
+    <p id="chartPresetMessage"></p>
+  </div>
+
+</div>
+
+<!-- CHART SECTION -->
+<div class="chart-grid">
+
+  <div class="card">
+    <div class="chart-header">
+    <h3>Job Distribution</h3>
+    <button class="chart-download-btn" onclick="downloadSingleChart('jobChart', 'job-distribution')">
+  Download
+</button>
+</div>
+    <canvas id="jobChart"></canvas>
+    <p id="jobInsight" class="insight"></p>
+  </div>
+
+  <!-- Individual chart download button for exporting chart as image -->
+  <div class="card">
+    <div class="chart-header">
+    <h3>Top Employers</h3>
+    <button class="chart-download-btn" onclick="downloadSingleChart('companyChart', 'top-employers')">Download</button>
+    </div>
+    <canvas id="companyChart"></canvas>
+    <p id="companyInsight" class="insight"></p>
+  </div>
+
+  <div class="card">
+    <div class="chart-header">
+    <h3>Curriculum Skills Gap Analysis</h3>
+    <button class="chart-download-btn" onclick="downloadSingleChart('certChart', 'skills-gap')">Download</button>
+    </div>
+    <canvas id="certChart"></canvas>
+    <p id="certInsight" class="insight"></p>
+  </div>
+
+  <div class="card">
+    <div class="chart-header">
+    <h3>API Usage</h3>
+    <button class="chart-download-btn" onclick="downloadSingleChart('usageChart', 'api-usage')">Download</button>
+    </div>
+    <canvas id="usageChart"></canvas>
+    <p id="usageInsight" class="insight"></p>
+  </div>
+
+  <div class="card">
+    <div class="chart-header">
+  <h3>Bid Trends</h3>
+  <button class="chart-download-btn" onclick="downloadSingleChart('bidChart', 'bid-trends')">Download</button>
+  </div>
+  <canvas id="bidChart"></canvas>
+  <p id="bidInsight" class="insight"></p>
+</div>
+<div class="card">
+  <div class="chart-header">
+  <h3>Industry Distribution</h3>
+  <button class="chart-download-btn" onclick="downloadSingleChart('industryChart', 'industry-distribution')">Download</button>
+  </div>
+  <canvas id="industryChart"></canvas>
+  <p id="industryInsight" class="insight"></p>
+</div>
+<div class="card">
+  <div class="chart-header">
+  <h3>Graduation Year Distribution</h3>
+  <button class="chart-download-btn" onclick="downloadSingleChart('yearChart', 'graduation-year')">Download</button>
+  </div>
+  <canvas id="yearChart"></canvas>
+  <p id="yearInsight" class="insight"></p>
+</div>
+<div class="card">
+  <div class="chart-header">
+  <h3>Geographic Distribution</h3>
+  <button class="chart-download-btn" onclick="downloadSingleChart('locationChart', 'geographic-distribution')">Download</button>
+  </div>
+  <canvas id="locationChart"></canvas>
+  <p id="locationInsight" class="insight"></p>
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+loadNavbar();   // navbar working
+renderChartPresets();
+
+// 👇 analytics trigger (safe)
+if (document.getElementById("jobChart")) {
+
+  const saved = JSON.parse(localStorage.getItem("filters"));
+
+  if (saved) {
+    // restore dropdown values
+    document.getElementById("programmeFilter").value = saved.programme || "";
+    document.getElementById("yearFilter").value = saved.year || "";
+    document.getElementById("industryFilter").value = saved.industry || "";
+
+    // load filtered charts
+    loadAnalytics(saved);
+  } else {
+    // load default charts
+    loadAnalytics();
+  }
+}
+
+</script>
+
+</body>
+</html>

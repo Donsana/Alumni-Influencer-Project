@@ -10,11 +10,16 @@ export const generateApiKey = async (req, res) => {
    // Store API key in database linked to user
     const apiKey = await ApiKey.create({
       userId: req.user._id || req.user,
-      key
+      key,
+      permissions: ["read:alumni", "read:analytics"]
     });
 
   // Return generated API key to client
-    res.json(apiKey);
+    res.json({
+      _id: apiKey._id,
+      key: apiKey.key,
+      permissions: apiKey.permissions
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

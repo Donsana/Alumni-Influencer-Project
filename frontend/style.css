@@ -833,3 +833,395 @@ body.manage .icon-btn {
   cursor: pointer;
   font-size: 18px;
 }
+
+/* ================= DASHBOARD (ANALYTICS) ================= */
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  padding: 20px 40px;
+}
+
+.chart-grid .card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.chart-grid canvas {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.export-btn {
+  background: #facc15;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.export-btn:hover {
+  background: #eab308;
+}
+.insight {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+}
+
+.loading-msg {
+  font-size: 14px;
+  opacity: 0.8;
+  animation: fade 1s infinite alternate;
+}
+
+@keyframes fade {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+.btn-primary {
+  background: #facc15;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-secondary {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* ================= DASHBOARD POLISH ================= */
+
+.dashboard-hero {
+  width: 86%;
+  margin: 25px auto 22px auto;
+  padding: 28px 30px;
+  background: #1e293b;
+  border-radius: 14px;
+}
+
+.dashboard-hero h1 {
+  font-size: 34px;
+  margin: 0;
+  color: white;
+}
+
+.dashboard-hero p {
+  margin: 6px 0 0 0;
+  color: #d1d5db;
+}
+
+/* summary cards */
+.card-container {
+  width: 89%;
+  margin: 0 auto -30px auto;
+  padding: 0 !important;
+}
+
+.card-container .card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+/* summary top cards */
+.card-container:first-of-type .card {
+  width: 280px;
+  min-height: 90px;
+}
+
+/* top industries/employers */
+.wide-card {
+  flex: 1;
+  min-width: 420px;
+  min-height: 95px;
+}
+
+.wide-card ul {
+  list-style: disc;
+  padding-left: 22px;
+}
+
+/* dashboard action buttons */
+.dashboard-actions {
+  width: 86%;
+  margin: 20px auto;
+  padding: 20px 24px;
+  background: #1e293b;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashboard-actions button {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+/* custom reports */
+.custom-report-card {
+  width: 86%;
+  margin: 20px auto;
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.custom-report-card h2 {
+  color: white;
+  margin-bottom: 5px;
+}
+
+.custom-report-card p {
+  color: #d1d5db;
+  margin-bottom: 28px;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 120px;
+  margin-bottom: 30px;
+}
+
+.report-grid label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  font-size: 16px;
+}
+
+.report-grid input[type="checkbox"] {
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.custom-report-card button {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 12px 22px;
+}
+
+.summary-cards {
+  width: 86%;
+   margin: 0 auto -10px auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.summary-cards .card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 28px;
+  min-height: 10px;
+}
+.custom-report-card button {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+/* ================= ALUMNI FILTER PAGE ================= */
+
+.alumni-panel {
+  width: 86%;
+  margin: 30px auto;
+  background: #334155;
+  border-radius: 15px;
+  padding: 30px;
+}
+
+.alumni-panel h1 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: white;
+  font-size: 32px;
+}
+
+.alumni-filter-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.alumni-filter-row select,
+.alumni-filter-row input {
+  width: 230px;
+  padding: 11px;
+  margin: 0;
+  border-radius: 8px;
+  border: none;
+  background: #e5e7eb;
+  color: black;
+}
+
+.alumni-filter-row button {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #facc15;
+  color: black;
+  font-weight: bold;
+}
+
+.alumni-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 22px;
+  background: #1e293b;
+  color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.alumni-table th {
+  background: #0f172a;
+  color: white;
+  padding: 14px;
+  text-align: left;
+}
+
+.alumni-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #475569;
+}
+
+.alumni-table tr:hover {
+  background: #263449;
+}
+
+.no-data-text {
+  text-align: center;
+  color: #cbd5e1;
+}
+.alumni-filter-row select {
+  width: 210px;
+}
+
+.alumni-filter-row button {
+  padding: 12px 18px;
+  white-space: nowrap;
+}
+
+/* ================= CHART FILTER PANEL ================= */
+
+.charts-panel {
+  width: 86%;
+  margin: 30px auto 20px auto;
+  background: #334155;
+  border-radius: 15px;
+  padding: 30px;
+}
+
+.charts-panel h1 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: white;
+  font-size: 32px;
+}
+
+.charts-filter-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.charts-filter-row select,
+.charts-filter-row input {
+  width: 210px;
+  padding: 11px;
+  margin: 0;
+  border-radius: 8px;
+  border: none;
+  background: #e5e7eb;
+  color: black;
+}
+
+.charts-filter-row button {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #facc15;
+  color: black;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* ================= SMALLER CHART CARDS FIX ================= */
+
+.chart-grid {
+  width: 91%;
+  margin: 0 auto;
+  padding: 20px 0;
+  gap: 24px;
+}
+
+.chart-grid .card {
+  height: 430px;
+  padding: 22px;
+  overflow: hidden;
+}
+
+.chart-grid canvas {
+  width: 100% !important;
+  height: 280px !important;
+  max-height: 280px !important;
+  display: block;
+}
+
+.chart-grid .insight {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  color: white;
+}
+
+.chart-download-btn {
+  width: auto !important;
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  background: #facc15;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chart-download-btn:hover {
+  transform: scale(1.03);
+}

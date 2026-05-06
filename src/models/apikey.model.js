@@ -7,7 +7,13 @@ const apiKeySchema = new mongoose.Schema({
   },
   key: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
+    index: true
+  },
+  permissions: {
+    type: [String],
+    default: ["read:alumni", "read:analytics"]
   },
   isActive: {
     type: Boolean,

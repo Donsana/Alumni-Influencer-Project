@@ -22,6 +22,7 @@ import {
   updateCourse,
   updateEmployment
 } from "../controllers/profile.controller.js";
+import { getAllProfiles } from "../controllers/profile.controller.js";
 
 import { protect } from "../middleware/auth.middleware.js";
 
@@ -426,5 +427,28 @@ router.put("/course/:index", protect, updateCourse);
  *         description: Unauthorized
  */
 router.put("/employment/:index", protect, updateEmployment);
+
+/**
+ * @swagger
+ * /api/profile/all:
+ *   get:
+ *     summary: Get all profiles with optional filters
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: jobTitle
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: company
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Profiles returned
+ */
+router.get("/all", protect, getAllProfiles);
 
 export default router;

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alumni</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Alumni Influencer</h2>
+  <div class="nav-links" id="navLinks"></div>
+</div>
+
+<div class="alumni-panel">
+
+  <h1>👥 Alumni Filter Page</h1>
+
+  <div class="alumni-filter-row">
+    <select id="programmeFilter">
+      <option value="">All Programmes</option>
+      <option value="CS">Computer Science</option>
+      <option value="Business">Business</option>
+    </select>
+
+    <select id="industryFilter">
+      <option value="">All Industry Sectors</option>
+      <option value="IT">IT</option>
+      <option value="Finance">Finance</option>
+    </select>
+
+    <select id="yearFilter">
+      <option value="">All Years</option>
+       <option value="2023">2023</option>
+  <option value="2024">2024</option>
+  <option value="2025">2025</option>
+  <option value="2026">2026</option>
+    </select>
+
+    <button onclick="loadAlumni()">Filter</button>
+    <button onclick="resetAlumniFilters()">Reset</button>
+    <button onclick="window.location.href='dashboard.html'">Back Dashboard</button>
+    
+<!-- Analytics action buttons for exporting reports -->
+    <button onclick="exportAlumniCSV()">Export CSV</button>
+    <button onclick="exportAlumniPDF()">Export PDF</button>
+  </div>
+<!-- Save and load reusable filter presets for analytics dashboard -->
+  <div class="alumni-filter-row">
+    <input id="presetName" placeholder="Preset name">
+
+    <button onclick="saveAlumniPreset()">Save Filter Preset</button>
+
+    <select id="presetList" onchange="loadAlumniPreset()">
+  <option value="" disabled selected>Load saved preset</option>
+</select>
+<p id="presetMessage"></p>
+  </div>
+
+  <table id="alumniTable" class="alumni-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Programme</th>
+        <th>Industry Sector</th>
+        <th>Graduation Year</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <p id="noDataMsg" class="no-data-text"></p>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+loadNavbar();
+renderAlumniPresets();
+restoreAlumniFilters();
+</script>
+
+</body>
+</html>

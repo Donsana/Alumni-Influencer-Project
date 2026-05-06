@@ -121,6 +121,7 @@ function loadNavbar() {
   else {
     nav.innerHTML = `
       <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
       <a href="profile.html">Profile</a>
       <a href="manage.html">Manage</a>
       <a href="bids.html">Bids</a>
@@ -197,6 +198,31 @@ if (bioEl) bioEl.innerText = user.bio || "No bio added yet.";
 
 const linkedinEl = document.getElementById("linkedin");
 if (linkedinEl) linkedinEl.innerText = user.linkedin || "No link added";
+
+const editNameEl = document.getElementById("editName");
+if (editNameEl) editNameEl.value = user.name || "";
+
+const editJobEl = document.getElementById("editJob");
+if (editJobEl) editJobEl.value = user.jobTitle || "";
+
+const editLinkedinEl = document.getElementById("editLinkedin");
+if (editLinkedinEl) editLinkedinEl.value = user.linkedin || "";
+
+const editBioEl = document.getElementById("editBio");
+if (editBioEl) editBioEl.value = user.bio || "";
+
+const programmeEl = document.getElementById("editProgramme");
+if (programmeEl) programmeEl.value = user.programme || "";
+
+const yearEl = document.getElementById("editYear");
+if (yearEl) yearEl.value = user.graduationYear || "";
+
+const industryEl = document.getElementById("editIndustry");
+if (industryEl) industryEl.value = user.industry || "";
+
+const locationEl = document.getElementById("editLocation");
+if (locationEl) locationEl.value = user.location || "";
+
 
   const img = document.querySelector(".profile-img img");
   // SHOW IMAGE IN MANAGE PAGE
@@ -1053,18 +1079,22 @@ function saveProfile() {
   const linkedin = document.getElementById("editLinkedin").value.trim();
   const bio = document.getElementById("editBio").value.trim();
   const image = uploadedImage || undefined;
+  const programme = document.getElementById("editProgramme").value;
+const graduationYear = document.getElementById("editYear").value;
+const industry = document.getElementById("editIndustry").value;
+const location = document.getElementById("editLocation").value;
 
   const msg = document.getElementById("profileMessage");
   msg.innerHTML = ""; // 🔥 ADD THIS
   const btn = document.querySelector(".profile-section button");
 
   // VALIDATION
-  if (!name || !job) {
-    msg.innerHTML = "❌ Please fill all required fields";
-    msg.className = "error";
-    clearMsg(msg);
-    return;
-  }
+  if (!name || !job || !programme || !graduationYear || !industry || !location) {
+  msg.innerHTML = "❌ Please fill all required fields";
+  msg.className = "error";
+  clearMsg(msg);
+  return;
+}
 
   // LOADING
   msg.innerHTML = "⏳ Saving...";
@@ -1079,12 +1109,16 @@ function saveProfile() {
       "Authorization": "Bearer " + localStorage.getItem("token")
     },
     body: JSON.stringify({
-      name,
-      jobTitle: job,
-      bio,
-      linkedin,
-      profileImage: image
-    })
+  name,
+  jobTitle: job,
+  bio,
+  linkedin,
+  profileImage: image,
+  programme,
+  graduationYear,
+  industry,
+  location
+})
   })
  .then(async res => {
   const data = await res.json();
@@ -1100,6 +1134,7 @@ function saveProfile() {
     msg.className = "success";
     setTimeout(() => {
   msg.innerHTML = "";
+  msg.className = "";
 }, 3000);
 
     btn.disabled = false;
@@ -1113,6 +1148,7 @@ function saveProfile() {
     msg.className = "error";
     setTimeout(() => {
   msg.innerHTML = "";
+  msg.className = "";
 }, 3000);
 
     btn.disabled = false;
@@ -1691,7 +1727,7 @@ function saveModal() {
 // Generate new API key for user
 function generateKey() {
     const msg = document.getElementById("apiMsg");
-  msg.innerText = ""; // ✅ ADD HERE
+  msg.innerText = ""; 
   fetch(API + "/api/keys", {
     method: "POST",
     headers: {
@@ -1706,6 +1742,8 @@ function generateKey() {
       const resultBox = document.getElementById("apiResult");
       const keyText = document.getElementById("apiKeyText");
       const revokeBtn = document.getElementById("revokeBtn");
+
+      localStorage.setItem("apiKey", data.key);
 
       if (resultBox && keyText && revokeBtn) {
         resultBox.style.display = "block";
@@ -1736,6 +1774,12 @@ clearMsg(msg);
 }
 // Load and display user's API keys
 function loadKeys() {
+  const list = document.getElementById("keyList");
+  if (!list) return;
+
+  // ✅ Show loading BEFORE request
+  list.innerHTML = "<div class='empty'>Loading...</div>";
+
   fetch(API + "/api/keys", {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
@@ -1746,42 +1790,40 @@ function loadKeys() {
       return res.json();
     })
     .then(data => {
-      const list = document.getElementById("keyList");
-      if (!list) return;
+      // ✅ Clear loading AFTER data arrives
+      list.innerHTML = "";
 
-      list.innerHTML = "<div class='empty'>Loading...</div>";
-
-      // EMPTY STATE
-      if (data.length === 0) {
+      // ✅ Empty state
+      if (!data || data.length === 0) {
         list.innerHTML = "<div class='empty'>No API keys yet</div>";
         return;
       }
 
+      // ✅ Render keys
       data.forEach(k => {
         const li = document.createElement("li");
 
         li.innerText = k.key;
 
-if (!k.isActive) {
-  li.innerText += " (revoked)";
-  li.style.color = "red";
-} else {
-  li.style.color = "white";
-}
+        if (!k.isActive) {
+          li.innerText += " (revoked)";
+          li.style.color = "red";
+        } else {
+          li.style.color = "white";
+        }
 
         list.appendChild(li);
       });
     })
     .catch(() => {
-      const list = document.getElementById("keyList");
-      if (list) list.innerHTML = "<div class='empty'>Error loading keys</div>";
+      list.innerHTML = "<div class='empty'>Error loading keys</div>";
     });
 }
 
 // Revoke selected API key
 function revokeKey(id) {
     const msg = document.getElementById("apiMsg");
-  msg.innerText = ""; // ✅ ADD HERE
+  msg.innerText = ""; 
   fetch(API + "/api/keys/" + id + "/revoke", {
     method: "PUT",
     headers: {
@@ -1856,5 +1898,1284 @@ window.onclick = function (e) {
     modal.style.display = "none";
   }
 };
+let jobChartInstance;
+let companyChartInstance;
+let certChartInstance;
+let usageChartInstance;
+let bidChartInstance;
+let industryChartInstance;
+let locationChartInstance;
+let yearChartInstance;
 
 
+function showNoDataMessage(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const parent = canvas.parentElement;
+
+  // remove old message
+  const oldMsg = parent.querySelector(".no-data-msg");
+  if (oldMsg) oldMsg.remove();
+
+  const loading = parent.querySelector(".loading-msg");
+  if (loading) loading.remove();
+
+  // clear canvas
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // destroy chart if exists
+  if (canvasId === "jobChart" && jobChartInstance) jobChartInstance.destroy();
+if (canvasId === "companyChart" && companyChartInstance) companyChartInstance.destroy();
+if (canvasId === "certChart" && certChartInstance) certChartInstance.destroy();
+if (canvasId === "usageChart" && usageChartInstance) usageChartInstance.destroy();
+if (canvasId === "bidChart" && bidChartInstance) bidChartInstance.destroy();
+if (canvasId === "industryChart" && industryChartInstance) industryChartInstance.destroy();
+if (canvasId === "yearChart" && yearChartInstance) yearChartInstance.destroy();
+if (canvasId === "locationChart" && locationChartInstance) locationChartInstance.destroy();
+
+  // show message
+  const msg = document.createElement("p");
+  msg.className = "no-data-msg";
+  msg.style.color = "#aaa";
+  msg.style.textAlign = "center";
+  msg.innerText = "No data available for selected filters";
+
+  parent.appendChild(msg);
+
+  const insight = document.getElementById(canvasId.replace("Chart", "Insight"));
+if (insight) insight.innerText = "No insights available";
+}
+
+function showLoading(chartId) {
+  const canvas = document.getElementById(chartId);
+  if (!canvas) return;
+
+  const parent = canvas.parentElement;
+
+  // 🔥 CLEAR OLD CHART VISUALLY
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 🔥 REMOVE OLD LOADING (if any)
+  const old = parent.querySelector(".loading-msg");
+  if (old) old.remove();
+
+  // 🔥 DIM CANVAS (nice UI touch)
+  canvas.style.opacity = "0.3";
+
+  // 🔥 ADD LOADING TEXT
+  parent.insertAdjacentHTML(
+    "beforeend",
+    "<p class='loading-msg' style='color:#aaa;text-align:center;'>Loading...</p>"
+  );
+}
+
+function removeLoading(chartId) {
+  const canvas = document.getElementById(chartId);
+  if (!canvas) return;
+
+  const parent = canvas.parentElement;
+
+  // remove loading text
+  const el = parent.querySelector(".loading-msg");
+  if (el) el.remove();
+
+  // 🔥 RESTORE VISIBILITY
+  canvas.style.opacity = "1";
+}
+function loadAnalytics(filters = {}) {
+  // CLEAR OLD INSIGHTS BEFORE LOADING
+[
+  "jobInsight",
+  "companyInsight",
+  "certInsight",
+  "usageInsight",
+  "bidInsight",
+  "industryInsight",
+  "locationInsight",
+  "yearInsight"
+].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+  el.innerText = "";
+  el.style.color = "#ccc"; // reset color
+}
+});
+// 🔥 CLEAR OLD CHARTS + MESSAGES BEFORE LOADING
+[
+  "jobChart",
+  "companyChart",
+  "certChart",
+  "usageChart",
+  "bidChart",
+  "industryChart",
+  "locationChart",
+  "yearChart"
+].forEach(id => {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+
+  const parent = canvas.parentElement;
+
+  // remove old messages
+  const msg = parent.querySelector(".no-data-msg");
+  if (msg) msg.remove();
+
+  const loading = parent.querySelector(".loading-msg");
+  if (loading) loading.remove();
+
+  // clear canvas
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+  const query = new URLSearchParams(filters).toString();
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    console.log("No token → analytics blocked");
+    return;
+  }
+
+  const apiKey = localStorage.getItem("apiKey");
+
+  if (!apiKey) {
+    console.log("No API key found");
+    return;
+  }
+
+  const headers = {
+    "Authorization": "Bearer " + token,
+    "x-api-key": apiKey
+  };
+
+  // ===== JOBS =====
+  showLoading("jobChart");
+  fetch(API + "/api/analytics/jobs?" + query, { headers })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Jobs error");
+      return data;
+    })
+    .then(data => {
+      removeLoading("jobChart");
+      if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+    showNoDataMessage("jobChart");
+
+    document.getElementById("jobInsight").innerText =
+    "No insights available";
+    return;
+  }
+const parent = document.getElementById("jobChart").parentElement;
+const oldMsg = parent.querySelector(".no-data-msg");
+if (oldMsg) oldMsg.remove();
+
+      data.sort((a, b) => b.count - a.count);
+
+      if (jobChartInstance) jobChartInstance.destroy();
+      jobChartInstance = new Chart(document.getElementById("jobChart"), {
+        type: "bar",
+        data: {
+          labels: data.map(d => d._id || "Not Specified"),
+          datasets: [{
+            label: "Jobs",
+            data: data.map(d => d.count)
+          }]
+        },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+      });
+      const top = data[0]?._id || "Not Specified";
+
+document.getElementById("jobInsight").innerText =
+  `Most common job: ${top} — indicates strong demand for this role, suggesting the curriculum is aligned with industry needs.`;
+
+const insight = document.getElementById("jobInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+    })
+    .catch(err => {
+      removeLoading("jobChart");
+  showNoDataMessage("jobChart");
+  console.log("Jobs:", err.message);
+});
+
+  // ===== COMPANIES =====
+  showLoading("companyChart");
+  fetch(API + "/api/analytics/companies?" + query, { headers })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Companies error");
+      return data;
+    })
+    .then(data => {
+      removeLoading("companyChart");
+      if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+    showNoDataMessage("companyChart");
+
+    document.getElementById("companyInsight").innerText = "No insights available";
+    return;
+  }
+
+const parent = document.getElementById("companyChart").parentElement;
+const oldMsg = parent.querySelector(".no-data-msg");
+if (oldMsg) oldMsg.remove();
+
+      data.sort((a, b) => b.count - a.count);
+
+      if (companyChartInstance) companyChartInstance.destroy();
+      companyChartInstance = new Chart(document.getElementById("companyChart"), {
+        type: "pie",
+        data: {
+          labels: data.map(d => d._id || "Not Specified"),
+          datasets: [{
+            data: data.map(d => d.count)
+          }]
+        },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+      });
+      const top = data[0]?._id || "Not Specified";
+document.getElementById("companyInsight").innerText =
+  `Top employer: ${top} — indicates strong recruitment relationship or industry demand from this company.`;
+
+  const insight = document.getElementById("companyInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+    })
+    .catch(err => {
+      removeLoading("companyChart");
+  showNoDataMessage("companyChart");
+  console.log("Companies:", err.message);
+});
+
+  // ===== CERTIFICATIONS =====
+  showLoading("certChart");
+  fetch(API + "/api/analytics/certifications?" + query, { headers })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Cert error");
+      return data;
+    })
+    .then(data => {
+      removeLoading("certChart"); 
+      if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+    showNoDataMessage("certChart");
+
+    document.getElementById("certInsight").innerText = "No insights available";
+    return;
+  }
+  data.sort((a, b) => b.count - a.count);
+
+const chartType = data.length >= 3 ? "radar" : "doughnut";
+
+const parent = document.getElementById("certChart").parentElement;
+const oldMsg = parent.querySelector(".no-data-msg");
+if (oldMsg) oldMsg.remove();
+
+      if (certChartInstance) certChartInstance.destroy();
+      certChartInstance = new Chart(document.getElementById("certChart"), {
+        type: chartType,
+        data: {
+          labels: data.map(d => d._id || "Not Specified"),
+          datasets: [{
+            label: "Certifications",
+            data: data.map(d => d.count)
+          }]
+        },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+      });
+      const top = data[0]?._id || "Not Specified";
+document.getElementById("certInsight").innerText =
+  `High interest in ${top} certifications suggests a potential skills gap that could be addressed in curriculum development.`;
+
+  const insight = document.getElementById("certInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+    })
+    .catch(err => {
+      removeLoading("certChart");
+  showNoDataMessage("certChart");
+  console.log("Cert:", err.message);
+});
+
+  // ===== USAGE =====
+  showLoading("usageChart");
+  fetch(API + "/api/analytics/usage?" + query, { headers })
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Usage error");
+      return data;
+    })
+    .then(data => {
+      removeLoading("usageChart");
+  if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+    showNoDataMessage("usageChart");
+
+    document.getElementById("usageInsight").innerText = "No insights available";
+    return;
+  }
+  data.sort((a, b) => b.count - a.count);
+
+const parent = document.getElementById("usageChart").parentElement;
+const oldMsg = parent.querySelector(".no-data-msg");
+if (oldMsg) oldMsg.remove();
+
+  if (usageChartInstance) usageChartInstance.destroy();
+  usageChartInstance = new Chart(document.getElementById("usageChart"), {
+    type: "bar",
+    data: {
+      labels: data.map(d => d._id || "Not Specified"), 
+      datasets: [{
+        label: "API Usage", 
+        data: data.map(d => d.count)
+      }]
+    },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+  });
+  const top = data[0]?._id || "Not Specified";
+document.getElementById("usageInsight").innerText =
+  `Most used endpoint: ${top} — highlights which analytics are most valuable to stakeholders.`;
+
+  const insight = document.getElementById("usageInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+})
+    .catch(err => {
+      removeLoading("usageChart");
+  showNoDataMessage("usageChart");
+  console.log("Usage:", err.message);
+});
+
+// ===== BID TRENDS =====
+showLoading("bidChart");
+fetch(API + "/api/analytics/bids?" + query, { headers })
+  .then(async res => {
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Bids error");
+    return data;
+  })
+  .then(data => {
+    removeLoading("bidChart");
+    if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+    showNoDataMessage("bidChart");
+
+    document.getElementById("bidInsight").innerText = "No insights available";
+    return;
+  }
+
+const parent = document.getElementById("bidChart").parentElement;
+const oldMsg = parent.querySelector(".no-data-msg");
+if (oldMsg) oldMsg.remove();
+
+    if (bidChartInstance) bidChartInstance.destroy();
+    bidChartInstance = new Chart(document.getElementById("bidChart"), {
+      type: "line",
+      data: {
+        labels: data.map(d => "Day " + d._id),
+        datasets: [{
+          label: "Total Bid Amount",
+          data: data.map(d => d.total),
+          fill: false,
+          tension: 0.3
+        }]
+      },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+    });
+    const peak = data.reduce((max, d) => d.total > max.total ? d : max, data[0]);
+
+document.getElementById("bidInsight").innerText =
+  `Peak bidding on Day ${peak._id} — indicates highest competition for visibility on this day.`;
+
+  const insight = document.getElementById("bidInsight");
+
+if (peak.total > 5000) {
+  insight.style.color = "red";
+} else if (peak.total > 2000) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+  })
+  .catch(err => {
+    removeLoading("bidChart");
+  showNoDataMessage("bidChart");
+  console.log("Bids:", err.message);
+});
+
+showLoading("industryChart");
+fetch(API + "/api/analytics/industry?" + query, { headers })
+  .then(res => res.json())
+  .then(data => {
+    removeLoading("industryChart");
+    if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+      showNoDataMessage("industryChart");
+
+      document.getElementById("industryInsight").innerText = "No insights available";
+      return;
+    }
+
+    const parent = document.getElementById("industryChart").parentElement;
+    const oldMsg = parent.querySelector(".no-data-msg");
+    if (oldMsg) oldMsg.remove();
+
+    data.sort((a, b) => b.count - a.count);
+
+    if (industryChartInstance) industryChartInstance.destroy();
+
+    industryChartInstance = new Chart(document.getElementById("industryChart"), {
+      type: "pie",
+      data: {
+        labels: data.map(d => d._id || "Not Specified"),
+        datasets: [{
+          data: data.map(d => d.count)
+        }]
+      },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+    });
+    const top = data[0]?._id || "Not Specified";
+document.getElementById("industryInsight").innerText =
+  `Top industry: ${top} — indicates the primary employment sector, helping guide curriculum focus towards this industry.`;
+
+  const insight = document.getElementById("industryInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+  })
+  .catch(err => {
+    removeLoading("industryChart");
+    showNoDataMessage("industryChart");
+    console.log("Industry:", err.message);
+  });
+
+  showLoading("locationChart");
+fetch(API + "/api/analytics/locations?" + query, { headers })
+  .then(res => res.json())
+  .then(data => {
+    removeLoading("locationChart");
+
+    if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+      showNoDataMessage("locationChart");
+      document.getElementById("locationInsight").innerText = "No insights available";
+      return;
+    }
+
+    const parent = document.getElementById("locationChart").parentElement;
+    const oldMsg = parent.querySelector(".no-data-msg");
+    if (oldMsg) oldMsg.remove();
+
+    data.sort((a, b) => b.count - a.count);
+
+    if (locationChartInstance) locationChartInstance.destroy();
+
+    locationChartInstance = new Chart(document.getElementById("locationChart"), {
+      type: "pie",
+      data: {
+        labels: data.map(d => d._id || "Not Specified"),
+        datasets: [{
+          label: "Alumni Locations",
+          data: data.map(d => d.count)
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    const top = data[0]?._id || "Not Specified";
+
+    document.getElementById("locationInsight").innerText =
+      `Most alumni are located in ${top} — indicates the strongest geographic alumni presence.`;
+
+    const insight = document.getElementById("locationInsight");
+
+    if (data[0].count > 50) {
+      insight.style.color = "red";
+    } else if (data[0].count > 20) {
+      insight.style.color = "orange";
+    } else {
+      insight.style.color = "lightgreen";
+    }
+  })
+  .catch(err => {
+    removeLoading("locationChart");
+    showNoDataMessage("locationChart");
+    console.log("Locations:", err.message);
+  });
+
+  showLoading("yearChart");
+  fetch(API + "/api/analytics/years?" + query, { headers })
+  .then(res => res.json())
+  .then(data => {
+    removeLoading("yearChart");
+    if (!Array.isArray(data) || data.length === 0 || data[0]?._id === "No Data") {
+      showNoDataMessage("yearChart");
+
+      document.getElementById("yearInsight").innerText = "No insights available";
+      return;
+    }
+
+    const parent = document.getElementById("yearChart").parentElement;
+    const oldMsg = parent.querySelector(".no-data-msg");
+    if (oldMsg) oldMsg.remove();
+
+    data.sort((a, b) => b.count - a.count);
+
+    if (yearChartInstance) yearChartInstance.destroy();
+
+    yearChartInstance = new Chart(document.getElementById("yearChart"), {
+      type: "bar",
+      data: {
+        labels: data.map(d => d._id),
+        datasets: [{
+          label: "Graduates",
+          data: data.map(d => d.count)
+        }]
+      },
+options: {
+  responsive: true,
+  maintainAspectRatio: false
+}
+    });
+    const top = data[0]?._id || "Not Specified";
+document.getElementById("yearInsight").innerText =
+  `Most graduates in: ${top} — helps track trends in graduate output and employment timing.`;
+
+  const insight = document.getElementById("yearInsight");
+
+if (data[0].count > 50) {
+  insight.style.color = "red";
+} else if (data[0].count > 20) {
+  insight.style.color = "orange";
+} else {
+  insight.style.color = "lightgreen";
+}
+  })
+  .catch(err => {
+    removeLoading("yearChart");
+    showNoDataMessage("yearChart");
+    console.log("Years:", err.message);
+  });
+}
+function exportChartsCSV() {
+  const saved = JSON.parse(localStorage.getItem("filters")) || {};
+const query = new URLSearchParams(saved).toString();
+  const token = localStorage.getItem("token");
+  const apiKey = localStorage.getItem("apiKey");
+
+  if (!token || !apiKey) {
+    alert("Login & API key required");
+    return;
+  }
+
+  const headers = {
+    Authorization: "Bearer " + token,
+    "x-api-key": apiKey
+  };
+
+  Promise.all([
+    fetch(API + "/api/analytics/jobs?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/companies?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/certifications?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/usage?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/bids?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/industry?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/locations?" + query, { headers }).then(res => res.json()),
+    fetch(API + "/api/analytics/years?" + query, { headers }).then(res => res.json())
+  ])
+  .then(([jobs, companies, certs, usage, bids, industry, locations, years]) => {
+
+    let csv = "Category,Label,Value\n";
+
+    jobs.forEach(d => csv += `Jobs,${d._id || "Unknown"},${d.count}\n`);
+    companies.forEach(d => csv += `Companies,${d._id || "Unknown"},${d.count}\n`);
+    certs.forEach(d => csv += `Certifications,${d._id || "Unknown"},${d.count}\n`);
+    usage.forEach(d => csv += `Usage,${d._id || "Unknown"},${d.count}\n`);
+    bids.forEach(d => {
+      csv += `Bids,Day ${d._id},${d.total}\n`;
+    });
+
+    industry.forEach(d => {
+      csv += `Industry,${d._id || "Unknown"},${d.count}\n`;
+    });
+
+    locations.forEach(d => {
+    csv += `Locations,${d._id || "Unknown"},${d.count}\n`;
+    });
+
+    years.forEach(d => {
+      csv += `Years,${d._id},${d.count}\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "analytics.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  })
+  .catch(err => {
+    console.log(err);
+    alert("Export failed");
+  });
+}
+function exportChartsPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Analytics Dashboard Report", 20, 20);
+
+  doc.setFontSize(12);
+
+  const programme = document.getElementById("programmeFilter").value || "All";
+  const year = document.getElementById("yearFilter").value || "All";
+  const industry = document.getElementById("industryFilter").value || "All";
+
+  doc.text(`Programme: ${programme}`, 20, 40);
+  doc.text(`Graduation Year: ${year}`, 20, 50);
+  doc.text(`Industry: ${industry}`, 20, 60);
+
+  doc.text("Charts generated based on selected filters.", 20, 80);
+
+  doc.save("analytics-report.pdf");
+}
+function exportCustomReportCSV() {
+  const selected = [...document.querySelectorAll(".report-option:checked")]
+    .map(cb => cb.value);
+
+  let csv = "Metric,Value\n";
+
+  if (selected.includes("totalAlumni")) {
+    csv += `Total Alumni,${document.getElementById("totalAlumni").innerText}\n`;
+  }
+
+  if (selected.includes("totalCerts")) {
+    csv += `Total Certifications,${document.getElementById("totalCerts").innerText}\n`;
+  }
+
+  if (selected.includes("totalJobs")) {
+    csv += `Employment Records,${document.getElementById("totalJobs").innerText}\n`;
+  }
+
+  if (selected.includes("topIndustries")) {
+    const industries = [...document.querySelectorAll("#dashboardTopIndustries li")]
+      .map(li => li.innerText)
+      .join(" | ");
+    csv += `Top Industries,${industries}\n`;
+  }
+
+  if (selected.includes("topEmployers")) {
+    const employers = [...document.querySelectorAll("#dashboardTopEmployers li")]
+      .map(li => li.innerText)
+      .join(" | ");
+    csv += `Top Employers,${employers}\n`;
+  }
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "custom-report.csv";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
+function exportCustomReportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const selected = [...document.querySelectorAll(".report-option:checked")]
+    .map(cb => cb.value);
+
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Custom Analytics Report", 20, y);
+  y += 15;
+
+  doc.setFontSize(12);
+
+  if (selected.includes("totalAlumni")) {
+    doc.text(`Total Alumni: ${document.getElementById("totalAlumni").innerText}`, 20, y);
+    y += 10;
+  }
+
+  if (selected.includes("totalCerts")) {
+    doc.text(`Total Certifications: ${document.getElementById("totalCerts").innerText}`, 20, y);
+    y += 10;
+  }
+
+  if (selected.includes("totalJobs")) {
+    doc.text(`Employment Records: ${document.getElementById("totalJobs").innerText}`, 20, y);
+    y += 10;
+  }
+
+  if (selected.includes("topIndustries")) {
+    const industries = [...document.querySelectorAll("#dashboardTopIndustries li")]
+      .map(li => li.innerText)
+      .join(", ");
+
+    doc.text(`Top Industries: ${industries}`, 20, y);
+    y += 10;
+  }
+
+  if (selected.includes("topEmployers")) {
+    const employers = [...document.querySelectorAll("#dashboardTopEmployers li")]
+      .map(li => li.innerText)
+      .join(", ");
+
+    doc.text(`Top Employers: ${employers}`, 20, y);
+  }
+
+  doc.save("custom-report.pdf");
+}
+function restoreCustomReportOptions() {
+  const saved = JSON.parse(localStorage.getItem("customReportOptions")) || {};
+
+  document.querySelectorAll(".report-option").forEach(option => {
+    if (saved.hasOwnProperty(option.value)) {
+      option.checked = saved[option.value];
+    }
+
+    option.addEventListener("change", () => {
+      const current = {};
+
+      document.querySelectorAll(".report-option").forEach(cb => {
+        current[cb.value] = cb.checked;
+      });
+
+      localStorage.setItem("customReportOptions", JSON.stringify(current));
+    });
+  });
+}
+function applyFilters() {
+  const programme = document.getElementById("programmeFilter").value;
+  const year = document.getElementById("yearFilter").value;
+  const industry = document.getElementById("industryFilter").value;
+
+  const filters = {};
+if (programme) filters.programme = programme;
+if (year) filters.year = year;
+if (industry) filters.industry = industry;
+
+   localStorage.setItem("filters", JSON.stringify(filters));
+
+  // reload charts with filters
+  loadAnalytics(filters);
+}
+function resetFilters() {
+  // clear dropdowns
+  document.getElementById("programmeFilter").value = "";
+  document.getElementById("yearFilter").value = "";
+  document.getElementById("industryFilter").value = "";
+
+  // remove saved filters
+  localStorage.removeItem("filters");
+  localStorage.removeItem("selectedChartPreset");
+
+  const presetList = document.getElementById("chartPresetList");
+  if (presetList) presetList.value = "";
+
+  // reload default charts
+  loadAnalytics();
+}
+
+function loadSummaryStats() {
+  fetch(API + "/api/analytics/summary", {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+      "x-api-key": localStorage.getItem("apiKey")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("totalAlumni").innerText = data.totalAlumni || 0;
+    document.getElementById("totalCerts").innerText = data.totalCerts || 0;
+    document.getElementById("totalJobs").innerText = data.totalJobs || 0;
+  })
+  .catch(err => {
+    console.log("Summary error:", err);
+  });
+}
+function loadDashboardTopStats() {
+  const token = localStorage.getItem("token");
+  const apiKey = localStorage.getItem("apiKey");
+
+  const headers = {
+    Authorization: "Bearer " + token,
+    "x-api-key": apiKey
+  };
+
+  fetch(API + "/api/analytics/industry", { headers })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("dashboardTopIndustries");
+      if (!list) return;
+
+      list.innerHTML = data.length
+        ? data.slice(0, 3).map(d => `<li>${d._id || "Unknown"} (${d.count})</li>`).join("")
+        : "<li>No data</li>";
+    });
+
+  fetch(API + "/api/analytics/companies", { headers })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("dashboardTopEmployers");
+      if (!list) return;
+
+      list.innerHTML = data.length
+        ? data.slice(0, 3).map(d => `<li>${d._id || "Unknown"} (${d.count})</li>`).join("")
+        : "<li>No data</li>";
+    });
+}
+function loadAlumni() {
+  const programme = document.getElementById("programmeFilter").value;
+  const year = document.getElementById("yearFilter").value;
+  const industry = document.getElementById("industryFilter").value;
+
+  localStorage.setItem("alumniFilters", JSON.stringify({
+    programme,
+    year,
+    industry
+  }));
+
+  const params = new URLSearchParams();
+  if (programme) params.append("programme", programme);
+  if (year) params.append("year", year);
+  if (industry) params.append("industry", industry);
+
+  const token = localStorage.getItem("token");
+  const apiKey = localStorage.getItem("apiKey");
+
+  const tableBody = document.querySelector("#alumniTable tbody");
+  const noDataMsg = document.getElementById("noDataMsg");
+
+  tableBody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+  noDataMsg.innerText = "";
+
+  fetch(API + "/api/alumni?" + params.toString(), {
+    headers: {
+      Authorization: "Bearer " + token,
+      "x-api-key": apiKey
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    tableBody.innerHTML = "";
+
+    if (!data.length) {
+      noDataMsg.innerText = "No alumni found";
+      return;
+    }
+
+    data.forEach(a => {
+      const row = `
+<tr>
+  <td>${a.name || "Not Specified"}</td>
+  <td>${a.userId?.email || "Not Specified"}</td>
+  <td>${a.programme || "Not Specified"}</td>
+  <td>${a.industry || "Not Specified"}</td>
+  <td>${a.graduationYear || "Not Specified"}</td>
+</tr>
+`;
+      tableBody.innerHTML += row;
+    });
+
+  })
+  .catch(err => {
+    tableBody.innerHTML = "";
+    noDataMsg.innerText = "Error loading data";
+    console.log(err);
+  });
+}
+function resetAlumniFilters() {
+  document.getElementById("programmeFilter").value = "";
+  document.getElementById("yearFilter").value = "";
+  document.getElementById("industryFilter").value = "";
+
+  const presetList = document.getElementById("presetList");
+  if (presetList) presetList.value = "";
+
+  localStorage.removeItem("alumniFilters");
+
+  loadAlumni();
+}
+function exportAlumniCSV() {
+  const rows = document.querySelectorAll("#alumniTable tbody tr");
+
+  let csv = "Name,Email,Programme,Industry,Year\n";
+
+  rows.forEach(row => {
+    const cols = row.querySelectorAll("td");
+    if (cols.length) {
+      csv += [
+        cols[0].innerText,
+        cols[1].innerText,
+        cols[2].innerText,
+        cols[3].innerText,
+        cols[4].innerText
+      ].join(",") + "\n";
+    }
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "alumni.csv";
+  a.click();
+}
+function exportAlumniPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let y = 20;
+
+  doc.setFontSize(16);
+  doc.text("Alumni Report", 20, y);
+
+  y += 15;
+
+  const rows = document.querySelectorAll("#alumniTable tbody tr");
+
+  rows.forEach((row, index) => {
+    const cols = row.querySelectorAll("td");
+
+    if (cols.length) {
+      const line = [
+        cols[0]?.innerText || "",
+        cols[1]?.innerText || "",
+        cols[2]?.innerText || "",
+        cols[3]?.innerText || "",
+        cols[4]?.innerText || ""
+      ].join(" | ");
+
+      doc.setFontSize(10);
+      doc.text(line, 20, y);
+
+      y += 10;
+
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+    }
+  });
+
+  doc.save("alumni-report.pdf");
+}
+function saveAlumniPreset() {
+  const name = document.getElementById("presetName").value.trim();
+  const msg = document.getElementById("presetMessage");
+
+  msg.innerHTML = "";
+  msg.className = "";
+
+  if (!name) {
+    msg.innerHTML = "❌ Please enter a preset name";
+    msg.className = "error";
+    clearMsg(msg);
+    return;
+  }
+
+  const preset = {
+    programme: document.getElementById("programmeFilter").value,
+    year: document.getElementById("yearFilter").value,
+    industry: document.getElementById("industryFilter").value
+  };
+
+  const presets = JSON.parse(localStorage.getItem("alumniPresets")) || {};
+  presets[name] = preset;
+
+  localStorage.setItem("alumniPresets", JSON.stringify(presets));
+
+  document.getElementById("presetName").value = "";
+  renderAlumniPresets();
+
+  msg.innerHTML = "✅ Preset saved successfully";
+  msg.className = "success";
+  clearMsg(msg);
+}
+
+function renderAlumniPresets() {
+  const list = document.getElementById("presetList");
+  if (!list) return;
+
+  const presets = JSON.parse(localStorage.getItem("alumniPresets")) || {};
+
+  list.innerHTML = `<option value="" disabled selected>Load saved preset</option>`;
+
+  Object.keys(presets).forEach(name => {
+    list.innerHTML += `<option value="${name}">${name}</option>`;
+  });
+}
+
+function loadAlumniPreset() {
+  const name = document.getElementById("presetList").value;
+  if (!name) return;
+
+  const presets = JSON.parse(localStorage.getItem("alumniPresets")) || {};
+  const preset = presets[name];
+
+  if (!preset) return;
+
+  document.getElementById("programmeFilter").value = preset.programme || "";
+  document.getElementById("yearFilter").value = preset.year || "";
+  document.getElementById("industryFilter").value = preset.industry || "";
+
+  localStorage.setItem("alumniFilters", JSON.stringify(preset));
+
+  loadAlumni();
+}
+function restoreAlumniFilters() {
+  const saved = JSON.parse(localStorage.getItem("alumniFilters"));
+
+  if (saved) {
+    document.getElementById("programmeFilter").value = saved.programme || "";
+    document.getElementById("yearFilter").value = saved.year || "";
+    document.getElementById("industryFilter").value = saved.industry || "";
+    loadAlumni();
+  } else {
+    loadAlumni();
+  }
+}
+function saveChartPreset() {
+  const name = document.getElementById("chartPresetName").value.trim();
+  const msg = document.getElementById("chartPresetMessage");
+
+  msg.innerHTML = "";
+  msg.className = "";
+
+  if (!name) {
+    msg.innerHTML = "❌ Please enter a preset name";
+    msg.className = "error";
+    clearMsg(msg);
+    return;
+  }
+
+  const preset = {
+    programme: document.getElementById("programmeFilter").value,
+    year: document.getElementById("yearFilter").value,
+    industry: document.getElementById("industryFilter").value
+  };
+
+  const presets = JSON.parse(localStorage.getItem("chartPresets")) || {};
+  presets[name] = preset;
+
+  localStorage.setItem("chartPresets", JSON.stringify(presets));
+
+  document.getElementById("chartPresetName").value = "";
+  renderChartPresets();
+
+  msg.innerHTML = "✅ Chart preset saved successfully";
+  msg.className = "success";
+  clearMsg(msg);
+}
+
+function renderChartPresets() {
+  const list = document.getElementById("chartPresetList");
+  if (!list) return;
+
+  const presets = JSON.parse(localStorage.getItem("chartPresets")) || {};
+
+  list.innerHTML = `<option value="" disabled selected>Load saved preset</option>`;
+
+  Object.keys(presets).forEach(name => {
+    list.innerHTML += `<option value="${name}">${name}</option>`;
+  });
+  
+  const selected = localStorage.getItem("selectedChartPreset");
+  if (selected && presets[selected]) {
+    list.value = selected;
+  }
+}
+
+function loadChartPreset() {
+  const name = document.getElementById("chartPresetList").value;
+  if (!name) return;
+
+  const presets = JSON.parse(localStorage.getItem("chartPresets")) || {};
+  const preset = presets[name];
+
+  if (!preset) return;
+
+  document.getElementById("programmeFilter").value = preset.programme || "";
+  document.getElementById("yearFilter").value = preset.year || "";
+  document.getElementById("industryFilter").value = preset.industry || "";
+
+  localStorage.setItem("filters", JSON.stringify(preset));
+  localStorage.setItem("selectedChartPreset", name);
+
+  loadAnalytics(preset);
+}
+
+function exportDashboardCSV() {
+  let csv = "Metric,Value\n";
+
+  csv += `Total Alumni,${document.getElementById("totalAlumni")?.innerText || "0"}\n`;
+  csv += `Total Certifications,${document.getElementById("totalCerts")?.innerText || "0"}\n`;
+  csv += `Employment Records,${document.getElementById("totalJobs")?.innerText || "0"}\n`;
+
+  const industries = [...document.querySelectorAll("#dashboardTopIndustries li")]
+    .map(li => li.innerText)
+    .join(" | ");
+
+  const employers = [...document.querySelectorAll("#dashboardTopEmployers li")]
+    .map(li => li.innerText)
+    .join(" | ");
+
+  csv += `Top Industries,${industries || "No data"}\n`;
+  csv += `Top Employers,${employers || "No data"}\n`;
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "dashboard-summary.csv";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
+function exportDashboardPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const totalAlumni =
+    document.getElementById("totalAlumni")?.innerText || "0";
+
+  const totalCerts =
+    document.getElementById("totalCerts")?.innerText || "0";
+
+  const totalJobs =
+    document.getElementById("totalJobs")?.innerText || "0";
+
+  const industries =
+    document.getElementById("dashboardTopIndustries")?.innerText || "No data";
+
+  const employers =
+    document.getElementById("dashboardTopEmployers")?.innerText || "No data";
+
+  doc.setFontSize(18);
+  doc.text("University Analytics Dashboard Report", 20, 20);
+
+  doc.setFontSize(12);
+
+  doc.text(`Total Alumni: ${totalAlumni}`, 20, 40);
+  doc.text(`Total Certifications: ${totalCerts}`, 20, 50);
+  doc.text(`Employment Records: ${totalJobs}`, 20, 60);
+
+  doc.text("Top Industries:", 20, 80);
+  doc.text(industries, 20, 90);
+
+  doc.text("Top Employers:", 20, 120);
+  doc.text(employers, 20, 130);
+
+  doc.save("dashboard-report.pdf");
+}
+
+function downloadSingleChart(chartId, fileName) {
+  const canvas = document.getElementById(chartId);
+  if (!canvas) return;
+
+  const link = document.createElement("a");
+  link.download = fileName + ".png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+function downloadAllChartsPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
+
+  const charts = [
+    { id: "jobChart", title: "Job Distribution" },
+    { id: "companyChart", title: "Top Employers" },
+    { id: "certChart", title: "Curriculum Skills Gap Analysis" },
+    { id: "usageChart", title: "API Usage" },
+    { id: "bidChart", title: "Bid Trends" },
+    { id: "industryChart", title: "Industry Distribution" },
+    { id: "yearChart", title: "Graduation Year Distribution" },
+    { id: "locationChart", title: "Geographic Distribution" }
+  ];
+
+  let y = 20;
+
+  doc.setFontSize(18);
+  doc.text("Analytics Chart Images Report", 20, y);
+  y += 15;
+
+  charts.forEach((chart, index) => {
+    const canvas = document.getElementById(chart.id);
+    if (!canvas) return;
+
+    const imgData = canvas.toDataURL("image/png");
+
+    if (y > 210) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFontSize(13);
+    doc.text(chart.title, 20, y);
+    y += 8;
+
+    doc.addImage(imgData, "PNG", 20, y, 170, 75);
+    y += 90;
+  });
+
+  doc.save("all-chart-images.pdf");
+}

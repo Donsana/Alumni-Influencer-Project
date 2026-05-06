@@ -10,7 +10,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/apikey:
+ * /api/keys:
  *   post:
  *     summary: Generate API key
  *     tags: [API Key]
@@ -23,7 +23,7 @@ const router = express.Router();
 router.post("/", protect, generateApiKey);
 /**
  * @swagger
- * /api/apikey:
+ * /api/keys:
  *   get:
  *     summary: Get API keys
  *     tags: [API Key]
@@ -36,7 +36,7 @@ router.post("/", protect, generateApiKey);
 router.get("/", protect, getApiKeys);
 /**
  * @swagger
- * /api/apikey/{id}/revoke:
+ * /api/keys/{id}/revoke:
  *   put:
  *     summary: Revoke API key
  *     tags: [API Key]

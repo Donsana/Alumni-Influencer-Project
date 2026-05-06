@@ -24,4 +24,8 @@ const bidSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+bidSchema.index({ userId: 1 });
+bidSchema.index({ date: -1 });
+bidSchema.index({ status: 1 });
+
 export default mongoose.model("Bid", bidSchema);

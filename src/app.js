@@ -15,6 +15,8 @@ import swaggerSpec from "./config/swagger.js";
 import { trackUsage } from "./middleware/usage.middleware.js";
 import rateLimit from "express-rate-limit";
 import apiKeyRoutes from "./routes/apikey.routes.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
+import alumniRoutes from "./routes/alumni.routes.js";
 
 
 
@@ -23,15 +25,37 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// Restrict API access to approved frontend origins only
+app.use(cors({
+  origin: [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-api-key"]
+}));
+
+// Apply secure HTTP headers to protect against common web vulnerabilities
 app.use(helmet());
 
+// General API rate limiter to reduce abuse across all endpoints
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000
 });
 
+// Stricter rate limiter for authentication routes to reduce brute-force attempts
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: {
+    message: "Too many authentication attempts. Please try again later."
+  }
+});
+
 app.use(limiter);
+// Track API usage for reporting endpoint access and usage statistics
 app.use(trackUsage);
 
 connectDB();
@@ -41,12 +65,15 @@ app.get("/", (req, res) => {
   res.send("API running...");
 });
 
+// Register application routes grouped by feature area
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/bids", bidRoutes);
 app.use("/api/usage", usageRoutes);
 app.use("/api/keys", apiKeyRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/alumni", alumniRoutes);
 
 const PORT = process.env.PORT || 5000;
 

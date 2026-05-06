@@ -47,7 +47,15 @@ router.get("/verify/:token", verifyEmail);
  *         description: User not found
  */
 
-router.post("/request-password-reset", requestPasswordReset);
+router.post(
+  "/request-password-reset",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Valid email required")
+  ],
+  requestPasswordReset
+);
 /**
  * @swagger
  * /api/auth/reset-password/{token}:
@@ -72,7 +80,21 @@ router.post("/request-password-reset", requestPasswordReset);
  *         description: Invalid token
  */
 
-router.post("/reset-password/:token", resetPassword);
+router.post(
+  "/reset-password/:token",
+  [
+    body("password")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters")
+      .matches(/[A-Z]/)
+      .withMessage("Password must contain at least one uppercase letter")
+      .matches(/[a-z]/)
+      .withMessage("Password must contain at least one lowercase letter")
+      .matches(/[0-9]/)
+      .withMessage("Password must contain at least one number")
+  ],
+  resetPassword
+);
 /**
  * @swagger
  * /api/auth/register:
@@ -97,8 +119,14 @@ router.post(
   [
     body("email").isEmail().withMessage("Valid email required"),
     body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters")
+      .matches(/[A-Z]/)
+      .withMessage("Password must contain at least one uppercase letter")
+      .matches(/[a-z]/)
+      .withMessage("Password must contain at least one lowercase letter")
+      .matches(/[0-9]/)
+      .withMessage("Password must contain at least one number")
   ],
   register
 );

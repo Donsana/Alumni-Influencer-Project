@@ -48,6 +48,26 @@ const profileSchema = new mongoose.Schema({
   name: String,
   jobTitle: String,
 
+  programme: {
+    type: String,
+    default: ""
+  },
+
+  graduationYear: {
+    type: Number,
+    default: null
+  },
+
+  industry: {
+    type: String,
+    default: ""
+  },
+
+  location: {
+    type: String,
+    default: ""
+  },
+
   degrees: [degreeSchema],
   certifications: [certificationSchema],
   licences: [licenceSchema],
@@ -57,5 +77,10 @@ const profileSchema = new mongoose.Schema({
   profileImage: String // (optional URL for now)
 
 }, { timestamps: true });
+
+profileSchema.index({ programme: 1 });
+profileSchema.index({ graduationYear: 1 });
+profileSchema.index({ industry: 1 });
+profileSchema.index({ location: 1 });
 
 export default mongoose.model("Profile", profileSchema);

@@ -51,6 +51,12 @@ export const getProfile = async (req, res) => {
      profile.bio,
      profile.linkedin,
      profile.profileImage,
+
+     profile.programme && profile.programme !== "Unknown",
+     profile.graduationYear,
+     profile.industry && profile.industry !== "Unknown",
+     profile.location && profile.location !== "Unknown",
+
      profile.degrees?.length > 0,
      profile.certifications?.length > 0,
      profile.licences?.length > 0,
@@ -84,6 +90,12 @@ export const updateProfile = async (req, res) => {
     if (req.body.bio) updateData.bio = req.body.bio;
     if (req.body.linkedin) updateData.linkedin = req.body.linkedin;
     if (req.body.profileImage) updateData.profileImage = req.body.profileImage;
+    if (req.body.programme) updateData.programme = req.body.programme;
+    if (req.body.graduationYear !== undefined) {
+      updateData.graduationYear = Number(req.body.graduationYear);
+    }
+    if (req.body.industry) updateData.industry = req.body.industry;
+    if (req.body.location) updateData.location = req.body.location;
 
     // Update profile or create one if it does not exist (upsert)
     const profile = await Profile.findOneAndUpdate(
@@ -102,6 +114,12 @@ export const updateProfile = async (req, res) => {
       profile.bio,
       profile.linkedin,
       profile.profileImage,
+
+      profile.programme && profile.programme !== "Unknown",
+      profile.graduationYear,
+      profile.industry && profile.industry !== "Unknown",
+      profile.location && profile.location !== "Unknown",
+
       profile.degrees?.length > 0,
       profile.certifications?.length > 0,
       profile.licences?.length > 0,
@@ -359,5 +377,23 @@ export const updateEmployment = async (req, res) => {
 
   await profile.save();
   res.json(profile);
+};
+// Retrieve all profiles with optional search filters for administrative or directory use
+export const getAllProfiles = async (req, res) => {
+  try {
+    const { jobTitle, company } = req.query;
+
+    let filter = {};
+
+    if (jobTitle) filter.jobTitle = jobTitle;
+
+    if (company) filter["employment.company"] = company;
+
+    const profiles = await Profile.find(filter);
+
+    res.json(profiles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 

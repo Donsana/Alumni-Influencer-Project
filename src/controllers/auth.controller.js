@@ -33,8 +33,8 @@ export const register = async (req, res) => {
       // IF NOT VERIFIED → RESEND TOKEN
       if (!existingUser.isVerified) {
 
-      // Generate unique verification token (UUID)
-        const token = uuidv4();
+      // Generate unique verification token (crypto)
+        const token = crypto.randomBytes(32).toString("hex");
 
       // Store verification token with expiry (1 hour)
         await Token.create({
@@ -73,7 +73,7 @@ export const register = async (req, res) => {
     });
 
     // CREATE VERIFICATION TOKEN
-    const token = uuidv4();
+    const token = crypto.randomBytes(32).toString("hex");
 
     await Token.create({
       userId: user._id,

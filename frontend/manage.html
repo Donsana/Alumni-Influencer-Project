@@ -23,17 +23,51 @@
     <div class="left">
       <h2>Manage Profile</h2>
 
-      <label>Full Name *</label>
-      <input id="editName" placeholder="Full Name">
+      <label for="editName">Full Name *</label>
+<input id="editName" placeholder="Full Name">
 
-      <label>Current Job Title *</label>
-      <input id="editJob" placeholder="Current Job Title">
+<label for="editJob">Current Job Title *</label>
+<input id="editJob" placeholder="Current Job Title">
 
-      <label>LinkedIn URL</label>
-      <input id="editLinkedin" placeholder="LinkedIn URL">
+<label for="editLinkedin">LinkedIn URL</label>
+<input id="editLinkedin" placeholder="LinkedIn URL">
 
-      <label>About / Bio</label>
-      <textarea id="editBio" placeholder="About / Bio"></textarea>
+<label for="editBio">About / Bio</label>
+<textarea id="editBio" placeholder="About / Bio"></textarea>
+
+      <label for="editProgramme">Programme *</label>
+<select id="editProgramme">
+  <option value="" disabled selected hidden>Select Programme</option>
+  <option value="CS">Computer Science</option>
+  <option value="Business">Business</option>
+</select>
+
+<label for="editYear">Graduation Year *</label>
+<select id="editYear">
+  <option value="" disabled selected hidden>Select Year</option>
+  <option value="2023">2023</option>
+  <option value="2024">2024</option>
+  <option value="2025">2025</option>
+  <option value="2026">2026</option>
+</select>
+
+<label for="editIndustry">Industry *</label>
+<select id="editIndustry">
+  <option value="" disabled selected hidden>Select Industry</option>
+  <option value="IT">IT</option>
+  <option value="Finance">Finance</option>
+</select>
+<label for="editLocation">Location *</label>
+<select id="editLocation">
+  <option value="" disabled selected hidden>Select Location</option>
+  <option value="Colombo">Colombo</option>
+  <option value="Kandy">Kandy</option>
+  <option value="Galle">Galle</option>
+  <option value="Jaffna">Jaffna</option>
+  <option value="London">London</option>
+  <option value="Dubai">Dubai</option>
+  <option value="Singapore">Singapore</option>
+</select>
 
       <div id="profileMessage"></div>
       <button onclick="saveProfile()">Save Profile</button>
@@ -60,119 +94,124 @@
   <!-- CERT + LICENCE -->
   <div class="grid-2">
 
-    <div class="card">
-      <h2>Certifications</h2>
-      <ul id="certList"></ul>
-
-      <label>Certification Name *</label>
-      <input id="certName" placeholder="Enter certification name">
-
-      <label>Organisation</label>
-      <input id="certOrg" placeholder="Enter organisation">
-
-      <label>Course URL</label>
-      <input id="certUrl" placeholder="https://...">
-
-      <label>Completion Date</label>
-      <input type="date" id="certDate">
-      <p id="certMsg"></p>
-      <button onclick="addCertification()">Add Certification</button>
-    </div>
-
-    <div class="card">
-      <h2>Professional Licences</h2>
-      <ul id="licenceList"></ul>
-
-      <label>Licence Name *</label>
-      <input id="licenceName">
-
-      <label>Awarding Body</label>
-      <input id="licenceBody">
-
-      <label>Official URL</label>
-      <input id="licenceUrl">
-
-      <label>Completion Date</label>
-      <input type="date" id="licenceDate">
-      <p id="licenceMsg"></p>
-      <button onclick="addLicence()">Add Licence</button>
-    </div>
-
-  </div>
-
-
-  <!-- DEGREE + COURSE -->
-  <div class="grid-2">
-
-    <div class="card">
-      <h2>Degrees</h2>
-      <ul id="degreeList"></ul>
-
-      <label>Degree Name *</label>
-      <input id="degreeName">
-
-      <label>Institution</label>
-      <input id="degreeInstitute">
-
-      <label>Official URL</label>
-      <input id="degreeUrl">
-
-      <label>Completion Date</label>
-      <input type="date" id="degreeDate">
-      <p id="degreeMsg"></p>
-      <button onclick="addDegree()">Add Degree</button>
-    </div>
-
-    <div class="card">
-      <h2>Short Courses</h2>
-      <ul id="courseList"></ul>
-
-      <label>Course Name *</label>
-      <input id="courseName">
-
-      <label>Provider</label>
-      <input id="courseProvider">
-
-      <label>Course URL</label>
-      <input id="courseUrl">
-
-      <label>Completion Date</label>
-      <input type="date" id="courseDate">
-      <p id="courseMsg"></p>
-      <button onclick="addCourse()">Add Course</button>
-    </div>
-
-  </div>
-
-
-  <!-- EMPLOYMENT -->
   <div class="card">
-    <h2>Employment History</h2>
-    <ul id="employmentList"></ul>
+    <h2>Certifications</h2>
+    <ul id="certList"></ul>
 
-    <label>Company Name *</label>
-    <input id="employmentName">
+    <label for="certName">Certification Name *</label>
+    <input id="certName" placeholder="e.g. AWS Certified Developer">
 
-    <label>Job Title *</label>
-    <input id="employmentTitle">
+    <label for="certOrg">Organisation</label>
+    <input id="certOrg" placeholder="e.g. Amazon Web Services">
 
-    <div class="grid-2">
-      <div>
-        <label>Start Date</label>
-        <input type="date" id="startDate">
-      </div>
+    <label for="certUrl">Course URL</label>
+    <input id="certUrl" placeholder="https://example.com/certificate">
 
-      <div>
-        <label>End Date</label>
-        <input type="date" id="endDate">
-      </div>
+    <label for="certDate">Completion Date</label>
+    <input type="date" id="certDate">
+
+    <p id="certMsg"></p>
+    <button onclick="addCertification()">Add Certification</button>
+  </div>
+
+  <div class="card">
+    <h2>Professional Licences</h2>
+    <ul id="licenceList"></ul>
+
+    <label for="licenceName">Licence Name *</label>
+    <input id="licenceName" placeholder="e.g. Chartered Engineer">
+
+    <label for="licenceBody">Awarding Body</label>
+    <input id="licenceBody" placeholder="e.g. Engineering Council">
+
+    <label for="licenceUrl">Official URL</label>
+    <input id="licenceUrl" placeholder="https://example.com/licence">
+
+    <label for="licenceDate">Completion Date</label>
+    <input type="date" id="licenceDate">
+
+    <p id="licenceMsg"></p>
+    <button onclick="addLicence()">Add Licence</button>
+  </div>
+
+</div>
+
+
+<!-- DEGREE + COURSE -->
+<div class="grid-2">
+
+  <div class="card">
+    <h2>Degrees</h2>
+    <ul id="degreeList"></ul>
+
+    <label for="degreeName">Degree Name *</label>
+    <input id="degreeName" placeholder="e.g. BSc Computer Science">
+
+    <label for="degreeInstitute">Institution</label>
+    <input id="degreeInstitute" placeholder="e.g. University of Westminster">
+
+    <label for="degreeUrl">Official URL</label>
+    <input id="degreeUrl" placeholder="https://example.com/degree">
+
+    <label for="degreeDate">Completion Date</label>
+    <input type="date" id="degreeDate">
+
+    <p id="degreeMsg"></p>
+    <button onclick="addDegree()">Add Degree</button>
+  </div>
+
+  <div class="card">
+    <h2>Short Courses</h2>
+    <ul id="courseList"></ul>
+
+    <label for="courseName">Course Name *</label>
+    <input id="courseName" placeholder="e.g. Full Stack Web Development">
+
+    <label for="courseProvider">Provider</label>
+    <input id="courseProvider" placeholder="e.g. Coursera / Udemy">
+
+    <label for="courseUrl">Course URL</label>
+    <input id="courseUrl" placeholder="https://example.com/course">
+
+    <label for="courseDate">Completion Date</label>
+    <input type="date" id="courseDate">
+
+    <p id="courseMsg"></p>
+    <button onclick="addCourse()">Add Course</button>
+  </div>
+
+</div>
+
+
+<!-- EMPLOYMENT -->
+<div class="card">
+  <h2>Employment History</h2>
+  <ul id="employmentList"></ul>
+
+  <label for="employmentName">Company Name *</label>
+  <input id="employmentName" placeholder="e.g. Google">
+
+  <label for="employmentTitle">Job Title *</label>
+  <input id="employmentTitle" placeholder="e.g. Software Engineer">
+
+  <div class="grid-2">
+    <div>
+      <label for="startDate">Start Date</label>
+      <input type="date" id="startDate">
     </div>
 
-    <label>Description</label>
-    <textarea id="employmentDesc"></textarea>
-    <p id="employmentMsg"></p>
-    <button onclick="addEmployment()">Add Employment</button>
+    <div>
+      <label for="endDate">End Date</label>
+      <input type="date" id="endDate">
+    </div>
   </div>
+
+  <label for="employmentDesc">Description</label>
+  <textarea id="employmentDesc" placeholder="Briefly describe your role, responsibilities, and achievements"></textarea>
+
+  <p id="employmentMsg"></p>
+  <button onclick="addEmployment()">Add Employment</button>
+</div>
 
 </div>
 
