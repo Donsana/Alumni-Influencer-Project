@@ -2504,6 +2504,9 @@ if (data[0].count > 50) {
     console.log("Years:", err.message);
   });
 }
+// Export all analytics chart data into CSV format
+// Includes jobs, companies, certifications, API usage,
+// bid trends, industry distribution, locations, and graduation years
 function exportChartsCSV() {
   const saved = JSON.parse(localStorage.getItem("filters")) || {};
 const query = new URLSearchParams(saved).toString();
@@ -2568,6 +2571,8 @@ const query = new URLSearchParams(saved).toString();
     alert("Export failed");
   });
 }
+// Export analytics dashboard summary into PDF format
+// Includes selected filter values and report overview
 function exportChartsPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -2589,6 +2594,8 @@ function exportChartsPDF() {
 
   doc.save("analytics-report.pdf");
 }
+// Export selected custom dashboard report metrics as CSV
+// Includes only user-selected report sections
 function exportCustomReportCSV() {
   const selected = [...document.querySelectorAll(".report-option:checked")]
     .map(cb => cb.value);
@@ -2631,6 +2638,8 @@ function exportCustomReportCSV() {
 
   window.URL.revokeObjectURL(url);
 }
+// Export selected custom dashboard report metrics as PDF
+// Generates a structured summary report for stakeholders
 function exportCustomReportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -2992,6 +3001,8 @@ function restoreAlumniFilters() {
     loadAlumni();
   }
 }
+// Save current analytics filter selections as a reusable preset
+// Stored in localStorage for quick future access
 function saveChartPreset() {
   const name = document.getElementById("chartPresetName").value.trim();
   const msg = document.getElementById("chartPresetMessage");
@@ -3024,7 +3035,8 @@ function saveChartPreset() {
   msg.className = "success";
   clearMsg(msg);
 }
-
+// Load all saved chart presets into dropdown list
+// Also restores previously selected preset if available
 function renderChartPresets() {
   const list = document.getElementById("chartPresetList");
   if (!list) return;
@@ -3042,7 +3054,8 @@ function renderChartPresets() {
     list.value = selected;
   }
 }
-
+// Apply selected saved preset to analytics filters
+// Automatically reloads charts using stored preset values
 function loadChartPreset() {
   const name = document.getElementById("chartPresetList").value;
   if (!name) return;
@@ -3126,7 +3139,8 @@ function exportDashboardPDF() {
 
   doc.save("dashboard-report.pdf");
 }
-
+// Download an individual chart as PNG image
+// Used for quick export of a single visual report
 function downloadSingleChart(chartId, fileName) {
   const canvas = document.getElementById(chartId);
   if (!canvas) return;
@@ -3136,7 +3150,8 @@ function downloadSingleChart(chartId, fileName) {
   link.href = canvas.toDataURL("image/png");
   link.click();
 }
-
+// Download all analytics charts together inside one PDF file
+// Each chart is added with title and exported as visual report
 function downloadAllChartsPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p", "mm", "a4");
