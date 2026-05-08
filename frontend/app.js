@@ -782,6 +782,7 @@ clearMsg(msg);
     loadBidStatus();
     loadMonthlyLimit();
     loadLiveStatus();
+    loadStats();
 
     document.getElementById("amount").value = "";
   })
@@ -922,7 +923,7 @@ function loadStats() {
   return res.json();
 })
   .then(data => {
-    document.getElementById("bids").innerText = data.bids || 0;
+    document.getElementById("bids").innerText = data.totalBids || 0;
     document.getElementById("wins").innerText = data.wins || 0;
   })
   .catch(() => {
@@ -1261,62 +1262,63 @@ function login() {
 }
 // Reset password using token
 function resetPassword() {
-  const email = document.getElementById("email").value;
+  const token = document.getElementById("token").value.trim();
+  const password = document.getElementById("newPassword").value.trim();
 
   const errorEl = document.getElementById("error");
   const successEl = document.getElementById("success");
 
-  // CLEAR OLD MESSAGES
   errorEl.innerText = "";
   successEl.innerText = "";
 
-  if (!email) {
-    errorEl.innerText = "Please enter your email";
+  if (!token || !password) {
+    errorEl.innerText = "Please enter reset token and new password";
     clearMsg(errorEl);
     return;
   }
 
   const btn = document.querySelector("#resetSection button");
   btn.disabled = true;
-
-  const token = document.getElementById("token").value;
-  const password = document.getElementById("newPassword").value;
+  btn.innerText = "Resetting...";
 
   fetch(API + "/api/auth/reset-password/" + token, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ password })
   })
-  .then(async res => {
-    const data = await res.json();
+    .then(async res => {
+      const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.message || "Reset failed");
-    }
+      if (!res.ok) {
+        const validationMsg =
+          data.errors && data.errors.length
+            ? data.errors[0].msg
+            : data.message || "Reset failed";
 
-    return data;
-  })
-  .then(data => {
-    // CLEAR ERROR
-    errorEl.innerText = "";
+        throw new Error(validationMsg);
+      }
 
-    // store success for login page
-    localStorage.setItem(
-      "successMsg",
-      data.message || "Password reset successful"
-    );
+      return data;
+    })
+    .then(data => {
+      localStorage.setItem(
+        "successMsg",
+        data.message || "Password reset successful"
+      );
 
-    window.location.href = "login.html";
-  })
-  .catch(err => {
-    errorEl.innerText = err.message;
-    successEl.innerText = "";
-
-    clearMsg(errorEl); // timeout
-  })
-  .finally(() => {
-    btn.disabled = false;
-  });
+      window.location.href = "login.html";
+    })
+    .catch(err => {
+      errorEl.innerText = err.message;
+      successEl.innerText = "";
+      clearMsg(errorEl);
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Reset Password";
+    });
 }
 // Request password reset token via email
 function requestReset() {

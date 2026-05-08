@@ -16,8 +16,8 @@
 <div class="card" style="width:400px; margin:90px auto;">
 
   <h2>🔑 Reset Password</h2>
-  <p id="success"></p>
-<p id="error"></p>
+  <p id="success" class="success"></p>
+<p id="error" class="error"></p>
   <!-- STEP 1: REQUEST RESET -->
   <div id="requestSection">
     <input type="email" id="email" placeholder="Enter your email">
@@ -28,8 +28,8 @@
   <div id="resetSection" style="display:none;">
     <input type="text" id="token" placeholder="Enter reset token">
     <div class="password-field">
-  <input type="password" id="password" placeholder="Password">
-  <span class="toggle-eye" onclick="togglePassword('password', this)">👁️</span>
+  <input type="password" id="newPassword" placeholder="Password">
+<span class="toggle-eye" onclick="togglePassword('newPassword', this)">👁️</span>
 </div>
     <button onclick="resetPassword()">Reset Password</button>
   </div>

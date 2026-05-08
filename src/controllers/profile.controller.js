@@ -69,9 +69,17 @@ export const getProfile = async (req, res) => {
    // Calculate completion percentage based on filled fields
    const completion = Math.round((filled / fields.length) * 100);
 
-   // Return profile data along with completion percentage
+   // Fetch user statistics because appearanceCount is stored in User model
+   const user = await User.findById(req.user).select(
+     "appearanceCount winsThisMonth isWinner"
+   );
+
+   // Return profile data, completion percentage, and user statistics
    res.json({
      ...profile.toObject(),
+     appearanceCount: user?.appearanceCount || 0,
+     winsThisMonth: user?.winsThisMonth || 0,
+     isWinner: user?.isWinner || false,
      completion
    });
 
