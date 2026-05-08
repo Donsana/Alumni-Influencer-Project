@@ -99,14 +99,17 @@ export const selectWinner = async () => {
   try {
     console.log("🔄 Running winner selection...");
 
-    // Define today's range for selecting winner
-    const start = new Date();
+    // Define yesterday's range because cron runs at midnight
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() - 1);
+
+    const start = new Date(targetDate);
     start.setHours(0, 0, 0, 0);
 
-    const end = new Date();
+    const end = new Date(targetDate);
     end.setHours(23, 59, 59, 999);
 
-    // Retrieve all bids placed today
+    // Retrieve all bids placed on the previous day
     const bids = await Bid.find({
       createdAt: { $gte: start, $lte: end }
     });
@@ -126,7 +129,7 @@ export const selectWinner = async () => {
 
     console.log("🏆 Highest bid:", highestBid.amount);
 
-    // Mark all today's bids as lost before selecting winner
+    // Mark all previous day's bids as lost before selecting winner
     await Bid.updateMany(
       { createdAt: { $gte: start, $lte: end } },
       { status: "lost", isWinner: false }
