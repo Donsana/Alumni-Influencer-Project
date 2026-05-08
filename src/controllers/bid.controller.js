@@ -116,9 +116,18 @@ export const selectWinner = async () => {
 
     console.log("Bids found:", bids.length);
 
-    // Exit if no bids were placed today
+    // Exit if no bids were placed on the previous day
     if (!bids.length) {
       console.log("❌ No bids found");
+      return;
+    }
+    const alreadySelected = await Bid.findOne({
+      createdAt: { $gte: start, $lte: end },
+      isWinner: true
+    });
+
+    if (alreadySelected) {
+      console.log("Winner already selected for this date");
       return;
     }
 
