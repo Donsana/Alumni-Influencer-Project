@@ -293,30 +293,3 @@ export const getTomorrowSlot = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// Determine if user's current bid is leading compared to highest bid
-export const getLiveBidStatus = async (req, res) => {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date();
-  end.setHours(23, 59, 59, 999);
-
-  // Get highest bid for today
-  const highest = await Bid.findOne({
-    createdAt: { $gte: start, $lte: end }
-  }).sort({ amount: -1 });
-
-  // Get current user's bid
-  const myBid = await Bid.findOne({
-    userId: req.user,
-    createdAt: { $gte: start, $lte: end }
-  });
-
-  if (!myBid || !highest) {
-    return res.json({ status: "no_bid" });
-  }
-  // Compare user's bid with highest bid to determine status
-  res.json({
-    status: myBid.amount >= highest.amount ? "winning" : "not_winning"
-  });
-};

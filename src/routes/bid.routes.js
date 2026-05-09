@@ -1,5 +1,5 @@
 import express from "express";
-import { placeBid, getMyBid, getMyBids, cancelBid, getBidStats, getBidStatus, getTomorrowSlot, getLiveBidStatus } from "../controllers/bid.controller.js";
+import { placeBid, getMyBid, getMyBids, cancelBid, getBidStats, getBidStatus, getTomorrowSlot } from "../controllers/bid.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { body } from "express-validator";
 
@@ -114,18 +114,5 @@ router.get("/stats", protect, getBidStats);
  *         description: Slot info
  */
 router.get("/slot", protect, getTomorrowSlot);
-/**
- * @swagger
- * /api/bids/live-status:
- *   get:
- *     summary: Get live bidding status
- *     tags: [Bids]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Live status
- */
-router.get("/live-status", protect, getLiveBidStatus);
 
 export default router;
