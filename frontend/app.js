@@ -990,28 +990,36 @@ else if (data.status === "lost") {
       document.getElementById("bidAmount").innerText = "Error loading";
     });
 }
-// Show if user is currently winning or losing
+// Show blind bidding result message without revealing live ranking
 function loadLiveStatus() {
-  fetch(API + "/api/bids/live-status", {
+  fetch(API + "/api/bids/me", {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
     }
   })
     .then(res => {
-  if (!res.ok) throw new Error("Request failed");
-  return res.json();
-})
+      if (!res.ok) throw new Error("Request failed");
+      return res.json();
+    })
     .then(data => {
       const el = document.getElementById("liveStatus");
-
       if (!el) return;
 
-      if (data.status === "winning") {
-        el.innerText = "🟢 You are currently WINNING!";
-      } else if (data.status === "not_winning") {
-        el.innerText = "🔴 You are NOT winning";
-      } else {
+      if (!data?.amount) {
         el.innerText = "No bid yet";
+        el.style.color = "white";
+        return;
+      }
+
+      if (data.status === "pending") {
+        el.innerText = "Final result will be announced after bidding closes.";
+        el.style.color = "#facc15";
+      } else if (data.status === "won") {
+        el.innerText = "🎉 Congratulations! You are today's Featured Alumni.";
+        el.style.color = "#22c55e";
+      } else if (data.status === "lost") {
+        el.innerText = "Your bid was unsuccessful today.";
+        el.style.color = "#ef4444";
       }
     })
     .catch(() => {
